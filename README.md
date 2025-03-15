@@ -1,54 +1,52 @@
-# React + TypeScript + Vite
+# Kanban App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este é um aplicativo de gerenciamento de tarefas estilo Kanban. Ele pode ser facilmente executado em um ambiente Docker.
 
-Currently, two official plugins are available:
+## Acessando o deploy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+https://app-kanban.vercel.app/
 
-## Expanding the ESLint configuration
+## Como rodar o projeto com Docker
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Passo 1: Baixar a imagem do Docker
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Primeiro, baixe a imagem do Docker Hub com o seguinte comando:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+*docker pull flaviare1s/app-kanban:v1*
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Passo 2: Rodar o contêiner
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Após a imagem ser baixada, você pode rodar o contêiner com o comando abaixo. Isso fará o aplicativo ser executado e acessível na porta 8080 da sua máquina:
+
+*docker run -p 8081:80 flaviare1s/app-kanban:v1*
+
+O comando acima irá mapear a porta 80 do contêiner para a porta 8080 da sua máquina, permitindo acessar o app no endereço `http://localhost:8080` no seu navegador.
+
+### Passo 3: Acessar o aplicativo
+
+Após rodar o contêiner, basta acessar o aplicativo através de seu navegador na URL:
+http://localhost:8081
+
+
+
+## Como rodar o projeto localmente (sem Docker)
+
+### Passo 1: Clonar o repositório
+
+Clone o repositório na sua máquina:
+
+*git clone https://github.com/flaviare1s/app-kanban.git*
+
+### Passo 2: Instalar as dependências
+
+Entre no diretório do projeto e instale as dependências com o npm:
+
+*cd app-kanban*
+*npm install*
+
+### Passo 3: Rodar o aplicativo
+
+Agora, execute o projeto:
+
+*npm run dev*
+
