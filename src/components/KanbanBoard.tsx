@@ -28,8 +28,17 @@ export const KanbanBoard: React.FC = () => {
   };
 
   useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-    setTasks(savedTasks);
+    const savedTasks = localStorage.getItem("tasks");
+
+    if (savedTasks) {
+      const parsedTasks: Task[] = JSON.parse(savedTasks);
+
+      const validatedTasks = parsedTasks.filter((task) =>
+        ["A Fazer", "Em Progresso", "Concluído"].includes(task.status)
+      );
+
+      setTasks(validatedTasks);
+    }
   }, []);
 
   const saveTask = (title: string, description: string) => {
@@ -64,7 +73,12 @@ export const KanbanBoard: React.FC = () => {
 
   const handleDropTask = (taskId: number, newStatus: string) => {
     const updatedTasks = tasks.map((task) =>
-      task.id === taskId ? { ...task, status: newStatus } : task
+      task.id === taskId
+        ? {
+            ...task,
+            status: newStatus as "A Fazer" | "Em Progresso" | "Concluído",
+          }
+        : task
     );
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
@@ -77,27 +91,16 @@ export const KanbanBoard: React.FC = () => {
           Quadro Kanban
         </h2>
         <div className="flex flex-col lg:flex-row h-screen">
-          <KanbanColumn
-            status="A Fazer"
-            tasks={tasks.filter((task) => task.status === "A Fazer")}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onDropTask={handleDropTask}
-          />
-          <KanbanColumn
-            status="Em Progresso"
-            tasks={tasks.filter((task) => task.status === "Em Progresso")}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onDropTask={handleDropTask}
-          />
-          <KanbanColumn
-            status="Concluído"
-            tasks={tasks.filter((task) => task.status === "Concluído")}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onDropTask={handleDropTask}
-          />
+          {["A Fazer", "Em Progresso", "Concluído"].map((status) => (
+            <KanbanColumn
+              key={status}
+              status={status}
+              tasks={tasks.filter((task) => task.status === status)}
+              onEditTask={handleEditTask}
+              onDeleteTask={handleDeleteTask}
+              onDropTask={handleDropTask}
+            />
+          ))}
         </div>
         <Button onClick={() => openTaskForm()} />
         {isTaskFormOpen && (
