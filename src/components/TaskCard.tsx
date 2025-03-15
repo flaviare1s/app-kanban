@@ -25,6 +25,15 @@ const TaskCard: React.FC<{
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleDelete = (id: number) => {
+    const confirmed = window.confirm(
+      "Tem certeza que deseja excluir esta tarefa?"
+    );
+    if (confirmed) {
+      onDeleteTask(id);
+    }
+  };
+
   return (
     <div
       ref={dragRef}
@@ -41,7 +50,7 @@ const TaskCard: React.FC<{
         }`}
       >
         <EditButton onClick={() => onEditTask(task.id)} />
-        <DeleteButton onClick={() => onDeleteTask(task.id)} />
+        <DeleteButton onClick={() => handleDelete(task.id)} />
       </div>
     </div>
   );

@@ -51,7 +51,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-fosco flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-4">
           {task ? "Editar Tarefa" : "Nova Tarefa"}
