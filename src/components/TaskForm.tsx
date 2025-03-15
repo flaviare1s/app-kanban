@@ -63,6 +63,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
           placeholder="Título"
           className="w-full p-2 mb-4 border rounded"
           maxLength={100}
+          tabIndex={0}
         />
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {titleLength === 100 && (
