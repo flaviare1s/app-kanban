@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { KanbanColumn } from "./KanbanColumn";
 import { TaskForm } from "./TaskForm";
 import { Button } from "./Button";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 interface Task {
   id: number;
@@ -38,7 +40,6 @@ export const KanbanBoard: React.FC = () => {
       setTasks(updatedTasks);
       localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     } else {
-
       const newTask: Task = {
         id: new Date().getTime(),
         title,
@@ -61,39 +62,52 @@ export const KanbanBoard: React.FC = () => {
     console.log(`Tarefa com id ${id} excluída`);
   };
 
+  const handleDropTask = (taskId: number, newStatus: string) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, status: newStatus } : task
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
   return (
-    <div className="font-nunito bg-primary p-4">
-      <h2 className="text-2xl font-bold text-center text-white p-4">
-        Quadro Kanban
-      </h2>
-      <div className="flex flex-col lg:flex-row h-screen">
-        <KanbanColumn
-          status="A Fazer"
-          tasks={tasks.filter((task) => task.status === "A Fazer")}
-          onEditTask={handleEditTask}
-          onDeleteTask={handleDeleteTask}
-        />
-        <KanbanColumn
-          status="Em Progresso"
-          tasks={tasks.filter((task) => task.status === "Em Progresso")}
-          onEditTask={handleEditTask}
-          onDeleteTask={handleDeleteTask}
-        />
-        <KanbanColumn
-          status="Concluído"
-          tasks={tasks.filter((task) => task.status === "Concluído")}
-          onEditTask={handleEditTask}
-          onDeleteTask={handleDeleteTask}
-        />
+    <DndProvider backend={HTML5Backend}>
+      <div className="font-nunito bg-primary p-4">
+        <h2 className="text-2xl font-bold text-center text-white p-4">
+          Quadro Kanban
+        </h2>
+        <div className="flex flex-col lg:flex-row h-screen">
+          <KanbanColumn
+            status="A Fazer"
+            tasks={tasks.filter((task) => task.status === "A Fazer")}
+            onEditTask={handleEditTask}
+            onDeleteTask={handleDeleteTask}
+            onDropTask={handleDropTask}
+          />
+          <KanbanColumn
+            status="Em Progresso"
+            tasks={tasks.filter((task) => task.status === "Em Progresso")}
+            onEditTask={handleEditTask}
+            onDeleteTask={handleDeleteTask}
+            onDropTask={handleDropTask}
+          />
+          <KanbanColumn
+            status="Concluído"
+            tasks={tasks.filter((task) => task.status === "Concluído")}
+            onEditTask={handleEditTask}
+            onDeleteTask={handleDeleteTask}
+            onDropTask={handleDropTask}
+          />
+        </div>
+        <Button onClick={() => openTaskForm()} />
+        {isTaskFormOpen && (
+          <TaskForm
+            onClose={closeTaskForm}
+            saveTask={saveTask}
+            task={taskToEdit}
+          />
+        )}
       </div>
-      <Button onClick={() => openTaskForm()} />{" "}
-      {isTaskFormOpen && (
-        <TaskForm
-          onClose={closeTaskForm}
-          saveTask={saveTask}
-          task={taskToEdit}
-        />
-      )}
-    </div>
+    </DndProvider>
   );
 };
