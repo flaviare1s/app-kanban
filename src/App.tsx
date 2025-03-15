@@ -1,10 +1,15 @@
-function App() {
+import { useState } from "react";
+import { WelcomeScreen } from "./components/WelcomeScreen";
+import { Home } from "./pages/Home";
 
-  return (
-   <div>
-    App Kanban
-   </div>
-  )
+function App() {
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  return showWelcome ? (
+    <WelcomeScreen onFinish={() => setShowWelcome(false)} />
+  ) : (
+    <Home />
+  );
 }
 
-export default App
+export default App;
