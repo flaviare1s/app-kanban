@@ -1,15 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface TaskFormProps {
   onClose: () => void;
   saveTask: (title: string, description: string) => void;
+  task: Task | null; // Recebendo a tarefa a ser editada
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({ onClose, saveTask }) => {
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: "A Fazer" | "Em Progresso" | "Concluído";
+}
+
+export const TaskForm: React.FC<TaskFormProps> = ({
+  onClose,
+  saveTask,
+  task,
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [titleLength, setTitleLength] = useState(0);
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setTitleLength(task.title.length);
+    }
+  }, [task]);
 
   const handleSave = () => {
     if (title.trim() === "") {
@@ -33,7 +53,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onClose, saveTask }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4">Nova Tarefa</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {task ? "Editar Tarefa" : "Nova Tarefa"}
+        </h2>
         <input
           type="text"
           value={title}

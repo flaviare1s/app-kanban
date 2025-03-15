@@ -13,13 +13,16 @@ interface Task {
 export const KanbanBoard: React.FC = () => {
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
-  const openTaskForm = () => {
+  const openTaskForm = (task?: Task) => {
+    setTaskToEdit(task || null);
     setIsTaskFormOpen(true);
   };
 
   const closeTaskForm = () => {
     setIsTaskFormOpen(false);
+    setTaskToEdit(null);
   };
 
   useEffect(() => {
@@ -28,20 +31,29 @@ export const KanbanBoard: React.FC = () => {
   }, []);
 
   const saveTask = (title: string, description: string) => {
-    const newTask: Task = {
-      id: new Date().getTime(),
-      title,
-      description,
-      status: "A Fazer",
-    };
+    if (taskToEdit) {
+      const updatedTasks = tasks.map((task) =>
+        task.id === taskToEdit.id ? { ...task, title, description } : task
+      );
+      setTasks(updatedTasks);
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    } else {
 
-    const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      const newTask: Task = {
+        id: new Date().getTime(),
+        title,
+        description,
+        status: "A Fazer",
+      };
+      const updatedTasks = [...tasks, newTask];
+      setTasks(updatedTasks);
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    }
   };
 
   const handleEditTask = (id: number) => {
-    console.log(`Editando a tarefa com id: ${id}`);
+    const taskToEdit = tasks.find((task) => task.id === id);
+    if (taskToEdit) openTaskForm(taskToEdit);
   };
 
   const handleDeleteTask = (id: number) => {
@@ -74,11 +86,13 @@ export const KanbanBoard: React.FC = () => {
           onDeleteTask={handleDeleteTask}
         />
       </div>
-
-      <Button onClick={openTaskForm} />
-
+      <Button onClick={() => openTaskForm()} />{" "}
       {isTaskFormOpen && (
-        <TaskForm onClose={closeTaskForm} saveTask={saveTask} />
+        <TaskForm
+          onClose={closeTaskForm}
+          saveTask={saveTask}
+          task={taskToEdit}
+        />
       )}
     </div>
   );
